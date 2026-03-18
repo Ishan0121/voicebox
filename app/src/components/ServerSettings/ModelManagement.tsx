@@ -394,14 +394,7 @@ export function ModelManagement() {
     setDetailOpen(true);
   };
 
-  const voiceModels =
-    modelStatus?.models.filter(
-      (m) =>
-        m.model_name.startsWith('qwen-tts') ||
-        m.model_name.startsWith('luxtts') ||
-        m.model_name.startsWith('chatterbox') ||
-        m.model_name.startsWith('tada'),
-    ) ?? [];
+  const voiceModels = modelStatus?.models.filter((m) => !m.model_name.startsWith('whisper')) ?? [];
   const whisperModels = modelStatus?.models.filter((m) => m.model_name.startsWith('whisper')) ?? [];
 
   // Build sections

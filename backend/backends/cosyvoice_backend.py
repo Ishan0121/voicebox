@@ -77,27 +77,72 @@ def _ensure_cosyvoice_on_path() -> None:
         sys.path.insert(0, matcha_str)
 
 
-def _shim_matcha_pylogger() -> None:
+def _shim_training_only_modules() -> None:
     """
-    Replace Matcha-TTS's ``pylogger`` module with a lightweight shim.
+    Pre-populate ``sys.modules`` with lightweight stubs for modules that
+    the CosyVoice YAML configs reference but are only needed for training.
 
-    The original ``matcha.utils.pylogger`` imports ``lightning.pytorch``
-    (pytorch-lightning) at module level just to get ``rank_zero_only``.
-    We don't need multi-GPU logging, so we inject a plain-logging
-    replacement to avoid pulling in the entire lightning dependency.
+    ``hyperpyyaml`` resolves every ``!name:`` / ``!new:`` tag via
+    ``pydoc.locate`` which eagerly imports the target module.  The YAML
+    references ``cosyvoice.dataset.processor`` (12 times) which pulls in
+    ``pyarrow``, ``pyworld``, etc. at module level.
+
+    Several ``matcha.utils.*`` submodules also import
+    ``lightning.pytorch`` at module level.  We stub those so the real
+    ``matcha.utils`` package can still expose ``audio.py`` and ``model.py``
+    for inference.
     """
     import types
     import logging as _logging
 
+    _noop = lambda *a, **kw: None
+
     def get_pylogger(name: str = __name__) -> _logging.Logger:
         return _logging.getLogger(name)
 
-    # Pre-populate the module in sys.modules before CosyVoice imports it
-    fake_utils = types.ModuleType("matcha.utils")
+    # ── matcha.utils submodules that import lightning ──────────────
     fake_pylogger = types.ModuleType("matcha.utils.pylogger")
     fake_pylogger.get_pylogger = get_pylogger  # type: ignore[attr-defined]
-    sys.modules.setdefault("matcha.utils", fake_utils)
-    sys.modules.setdefault("matcha.utils.pylogger", fake_pylogger)
+
+    fake_logging_utils = types.ModuleType("matcha.utils.logging_utils")
+    fake_logging_utils.log_hyperparameters = _noop  # type: ignore[attr-defined]
+
+    fake_rich_utils = types.ModuleType("matcha.utils.rich_utils")
+    fake_rich_utils.enforce_tags = _noop  # type: ignore[attr-defined]
+    fake_rich_utils.print_config_tree = _noop  # type: ignore[attr-defined]
+
+    fake_instantiators = types.ModuleType("matcha.utils.instantiators")
+    fake_instantiators.instantiate_callbacks = lambda *a, **kw: []  # type: ignore[attr-defined]
+    fake_instantiators.instantiate_loggers = lambda *a, **kw: []  # type: ignore[attr-defined]
+
+    fake_utils_utils = types.ModuleType("matcha.utils.utils")
+    fake_utils_utils.extras = _noop  # type: ignore[attr-defined]
+    fake_utils_utils.get_metric_value = _noop  # type: ignore[attr-defined]
+    fake_utils_utils.task_wrapper = lambda fn: fn  # type: ignore[attr-defined]
+
+    sys.modules["matcha.utils.pylogger"] = fake_pylogger
+    sys.modules["matcha.utils.logging_utils"] = fake_logging_utils
+    sys.modules["matcha.utils.rich_utils"] = fake_rich_utils
+    sys.modules["matcha.utils.instantiators"] = fake_instantiators
+    sys.modules["matcha.utils.utils"] = fake_utils_utils
+
+    # ── cosyvoice.dataset.processor (training data pipeline) ──────
+    # Referenced 12 times in cosyvoice2.yaml / cosyvoice3.yaml via
+    # !name: tags.  Imports pyarrow, pyworld, whisper at module level.
+    fake_dataset = types.ModuleType("cosyvoice.dataset")
+    fake_dataset.__path__ = []  # type: ignore[attr-defined]
+    fake_processor = types.ModuleType("cosyvoice.dataset.processor")
+    for _fn in (
+        "parquet_opener", "tokenize", "filter", "resample", "truncate",
+        "compute_fbank", "compute_whisper_fbank", "compute_f0",
+        "parse_embedding", "shuffle", "sort", "batch", "padding",
+    ):
+        setattr(fake_processor, _fn, _noop)
+
+    sys.modules.setdefault("cosyvoice.dataset", fake_dataset)
+    sys.modules["cosyvoice.dataset.processor"] = fake_processor
+
+
 
 
 def _patch_modelscope_to_hf() -> None:
@@ -119,6 +164,35 @@ def _patch_modelscope_to_hf() -> None:
     fake_ms = types.ModuleType("modelscope")
     fake_ms.snapshot_download = _hf_download
     sys.modules["modelscope"] = fake_ms
+
+
+def _patch_torchaudio_load() -> None:
+    """
+    Replace ``torchaudio.load`` with a soundfile-backed implementation.
+
+    torchaudio >= 2.9 unconditionally delegates to TorchCodec and ignores
+    the ``backend`` parameter.  CosyVoice calls ``torchaudio.load(wav,
+    backend='soundfile')`` which now fails unless ``torchcodec`` is
+    installed.  We swap in a lightweight wrapper that reads via soundfile
+    and returns the same ``(Tensor, sample_rate)`` tuple.
+    """
+    import torch
+    import torchaudio
+    import soundfile as sf
+
+    def _sf_load(uri, frame_offset=0, num_frames=-1, normalize=True,
+                 channels_first=True, format=None, buffer_size=4096,
+                 backend=None):
+        data, sr = sf.read(uri, start=frame_offset,
+                           stop=None if num_frames < 0 else frame_offset + num_frames,
+                           dtype="float32", always_2d=True)
+        # data shape: (frames, channels) → tensor
+        tensor = torch.from_numpy(data)
+        if channels_first:
+            tensor = tensor.T  # (channels, frames)
+        return tensor, sr
+
+    torchaudio.load = _sf_load
 
 
 class CosyVoiceTTSBackend:
@@ -192,8 +266,9 @@ class CosyVoiceTTSBackend:
             # 2. Patch imports (thread-safe, once)
             with CosyVoiceTTSBackend._import_lock:
                 if not CosyVoiceTTSBackend._patched:
-                    _shim_matcha_pylogger()
+                    _shim_training_only_modules()
                     _patch_modelscope_to_hf()
+                    _patch_torchaudio_load()
                     CosyVoiceTTSBackend._patched = True
 
             # 3. Patch torch.load to force map_location on CPU
