@@ -23,6 +23,9 @@
   <a href="https://github.com/jamiepine/voicebox/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/jamiepine/voicebox?style=flat" alt="License" />
   </a>
+  <a href="https://deepwiki.com/jamiepine/voicebox">
+    <img src="https://img.shields.io/static/v1?label=Ask&message=DeepWiki&color=5B6EF7" alt="Ask DeepWiki" />
+  </a>
 </p>
 
 <p align="center">
