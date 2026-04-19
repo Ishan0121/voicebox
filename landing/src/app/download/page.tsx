@@ -29,7 +29,7 @@ const PLATFORMS: PlatformMeta[] = [
   { key: 'macArm', label: 'macOS', description: 'Apple Silicon', icon: AppleIcon },
   { key: 'macIntel', label: 'macOS', description: 'Intel (x64)', icon: AppleIcon },
   { key: 'windows', label: 'Windows', description: '64-bit (MSI)', icon: WindowsIcon },
-  { key: 'linux', label: 'Linux', description: 'AppImage', icon: LinuxIcon },
+  { key: 'linux', label: 'Linux', description: 'Build from source', icon: LinuxIcon },
 ];
 
 function detectPlatform(): Platform | null {
@@ -67,7 +67,15 @@ export default function DownloadPage() {
 
   useEffect(() => {
     const fromQuery = parseQueryPlatform(window.location.search);
-    setPlatform(fromQuery ?? detectPlatform());
+    const resolved = fromQuery ?? detectPlatform();
+    // No prebuilt Linux binary yet — send Linux users to the build-from-source
+    // instructions instead of sitting on /download trying to trigger a
+    // download that doesn't exist.
+    if (resolved === 'linux') {
+      window.location.replace('/linux-install');
+      return;
+    }
+    setPlatform(resolved);
   }, []);
 
   useEffect(() => {
@@ -179,22 +187,24 @@ export default function DownloadPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {PLATFORMS.map((meta) => {
-              const url = links?.[meta.key];
+              const isLinux = meta.key === 'linux';
+              const url = isLinux ? '/linux-install' : links?.[meta.key];
               const isActive = meta.key === platform;
+              const disabled = !isLinux && !url;
               return (
                 <a
                   key={meta.key}
                   href={url ?? '#'}
-                  download
-                  aria-disabled={!url}
+                  {...(isLinux ? {} : { download: true })}
+                  aria-disabled={disabled}
                   onClick={(e) => {
-                    if (!url) e.preventDefault();
+                    if (disabled) e.preventDefault();
                   }}
                   className={`flex items-center rounded-xl border px-5 py-4 transition-all group ${
                     isActive
                       ? 'border-accent/40 bg-accent/5 hover:border-accent/60'
                       : 'border-border bg-card/40 hover:border-accent/30 hover:bg-card'
-                  } ${!url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <meta.icon className="h-6 w-6 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
                   <div className="ml-4 flex-1">

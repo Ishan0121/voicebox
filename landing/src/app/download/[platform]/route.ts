@@ -11,7 +11,6 @@ const PLATFORM_ALIAS: Record<string, string> = {
   'mac-arm': 'macArm',
   'mac-intel': 'macIntel',
   windows: 'windows',
-  linux: 'linux',
 };
 
 export async function GET(
@@ -19,6 +18,10 @@ export async function GET(
   { params }: { params: Promise<{ platform: string }> },
 ) {
   const { platform } = await params;
+  // No prebuilt Linux binary yet — send straight to the build-from-source page.
+  if (platform === 'linux') {
+    return NextResponse.redirect(new URL('/linux-install', request.url), 307);
+  }
   const normalized = PLATFORM_ALIAS[platform];
   const target = new URL('/download', request.url);
   if (normalized) target.searchParams.set('platform', normalized);
