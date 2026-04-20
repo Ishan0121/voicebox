@@ -21,6 +21,161 @@
     "settings": "设置",
     "updateBadge": "更新"
   },
+  "profileForm": {
+    "createTitle": "创建声音",
+    "editTitle": "编辑声音",
+    "createDescription": "从音频样本或内置声音创建新的声音档案。",
+    "editDescription": "更新您的声音档案详情并管理样本。",
+    "draftRestored": "已恢复草稿",
+    "discard": "丢弃",
+    "source": {
+      "clone": "从音频克隆",
+      "builtin": "内置声音"
+    },
+    "builtin": {
+      "hint": "选择一个预建的声音。这些不需要音频样本。",
+      "badge": "内置声音",
+      "note": "此档案使用内置声音。创建后声音无法更改。"
+    },
+    "sampleTabs": {
+      "upload": "上传",
+      "record": "录制",
+      "system": "系统音频"
+    },
+    "fields": {
+      "engine": "引擎",
+      "voice": "声音",
+      "name": "名称",
+      "namePlaceholder": "我的声音",
+      "descriptionLabel": "描述(可选)",
+      "descriptionPlaceholder": "描述此声音……",
+      "language": "语言",
+      "referenceText": "参考文本",
+      "referenceTextPlaceholder": "输入音频中所说的准确文字……",
+      "defaultEngine": "默认引擎",
+      "noPreference": "无偏好",
+      "defaultEngineHint": "选择该档案时自动使用此引擎。",
+      "defaultEffects": "默认效果",
+      "defaultEffectsHint": "自动应用于使用此声音的所有新生成的效果。"
+    },
+    "avatar": {
+      "alt": "头像预览"
+    },
+    "actions": {
+      "saving": "保存中…",
+      "saveChanges": "保存更改",
+      "createProfile": "创建档案"
+    },
+    "validation": {
+      "nameRequired": "请输入名称",
+      "referenceRequired": "添加样本时需要参考文本",
+      "sampleRequired": "需要音频样本",
+      "referenceTextRequired": "需要参考文本",
+      "audioTooLong": "音频过长({{duration}})。最大时长为 {{max}}。",
+      "audioFailed": "音频文件验证失败。请尝试其他文件。"
+    },
+    "toast": {
+      "recordingComplete": "录制完成",
+      "recordingCompleteDescription": "音频已成功录制。",
+      "recordingError": "录制错误",
+      "systemAudioCaptured": "系统音频已捕获",
+      "systemAudioCapturedDescription": "音频已成功捕获。",
+      "systemAudioError": "系统音频捕获错误",
+      "transcribeFailed": "转录失败",
+      "transcribeFailedFallback": "无法转录音频",
+      "noFile": "未选择文件",
+      "noFileDescription": "请先选择一个音频文件。",
+      "invalidFile": "文件类型无效",
+      "invalidImageFormat": "请选择图片文件(PNG、JPG 或 WebP)",
+      "fileTooLarge": "文件过大",
+      "imageTooLargeDescription": "图片必须小于 5MB",
+      "avatarRemoved": "头像已移除",
+      "avatarRemovedDescription": "头像图片已成功移除。",
+      "avatarRemoveFailed": "移除头像失败",
+      "avatarUploadFailed": "头像上传失败",
+      "avatarUploadFailedFallback": "无法上传头像",
+      "effectsUpdateFailed": "效果更新失败",
+      "effectsUpdateFailedFallback": "无法保存效果链",
+      "voiceUpdated": "声音已更新",
+      "voiceUpdatedDescription": "\"{{name}}\" 已成功更新。",
+      "noVoiceSelected": "未选择声音",
+      "noVoiceSelectedDescription": "请选择内置声音。",
+      "profileCreated": "档案已创建",
+      "profileCreatedBuiltin": "\"{{name}}\" 已使用内置声音创建。",
+      "profileCreatedSample": "\"{{name}}\" 已使用样本创建。",
+      "sampleRequired": "需要音频样本",
+      "sampleRequiredDescription": "请提供音频样本以创建声音档案。",
+      "referenceTextRequired": "需要参考文本",
+      "referenceTextRequiredDescription": "请提供音频样本的参考文本。",
+      "invalidAudio": "音频文件无效",
+      "invalidAudioDescription": "音频时长为 {{duration}},但最大为 {{max}}。",
+      "validationError": "验证错误",
+      "rollbackFailed": "回滚失败",
+      "rollbackFailedDescription": "样本上传失败后无法移除已创建的档案。",
+      "profileRolledBack": "档案已回滚。",
+      "sampleFailed": "添加样本失败",
+      "sampleFailedDescription": "添加样本失败。",
+      "sampleFailedRolledBack": "添加样本失败。档案已回滚。",
+      "saveFailed": "保存档案失败"
+    }
+  },
+  "audioSample": {
+    "chooseFile": "选择文件",
+    "uploadHint": "点击选择文件或拖放。最大时长:30 秒。",
+    "fileUploaded": "文件已上传",
+    "fileLabel": "文件:{{name}}",
+    "play": "播放",
+    "pause": "暂停",
+    "transcribe": "转录",
+    "transcribing": "转录中…",
+    "remove": "移除",
+    "startRecording": "开始录制",
+    "recordHint": "点击开始录制。最大时长:30 秒。",
+    "stopRecording": "停止录制",
+    "remaining": "剩余 {{time}}",
+    "recordingComplete": "录制完成",
+    "recordAgain": "重新录制",
+    "startCapture": "开始捕获",
+    "systemHint": "从您的系统捕获音频。最大时长:30 秒。",
+    "stopCapture": "停止捕获",
+    "captureComplete": "捕获完成",
+    "captureAgain": "重新捕获"
+  },
+  "sampleList": {
+    "loading": "加载样本中…",
+    "empty": {
+      "title": "暂无样本",
+      "hint": "添加第一个音频样本以开始"
+    },
+    "editing": "正在编辑转录",
+    "placeholder": "输入参考文本……",
+    "saving": "保存中…",
+    "editTranscription": "编辑转录",
+    "deleteSample": "删除样本",
+    "addSample": "添加样本",
+    "note": "注意:单个 30 秒的样本效果最佳。多个样本可能会降低质量。未来版本中样本可能会变得可互换,并为同一声音的不同风格打标签。",
+    "deleteDialog": {
+      "title": "删除样本",
+      "description": "确定要删除此音频样本吗?此操作不可撤销。",
+      "deleting": "删除中…"
+    },
+    "player": {
+      "play": "播放样本",
+      "pause": "暂停样本",
+      "stop": "停止",
+      "stopAria": "停止播放",
+      "position": "样本播放位置",
+      "positionValue": "{{current}} / {{total}}"
+    },
+    "toast": {
+      "invalidText": "文本无效",
+      "invalidTextDescription": "参考文本不能为空。",
+      "updated": "样本已更新",
+      "updatedDescription": "参考文本已成功更新。",
+      "updateFailed": "更新失败",
+      "updateFailedFallback": "更新样本失败"
+    }
+  },
   "profiles": {
     "card": {
       "noDescription": "无描述",

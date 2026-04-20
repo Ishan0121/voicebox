@@ -21,6 +21,161 @@
     "settings": "Settings",
     "updateBadge": "Update"
   },
+  "profileForm": {
+    "createTitle": "Create Voice",
+    "editTitle": "Edit Voice",
+    "createDescription": "Create a new voice profile from an audio sample or a built-in voice.",
+    "editDescription": "Update your voice profile details and manage samples.",
+    "draftRestored": "Draft restored",
+    "discard": "Discard",
+    "source": {
+      "clone": "Clone from audio",
+      "builtin": "Built-in voice"
+    },
+    "builtin": {
+      "hint": "Choose a pre-built voice. These don't require an audio sample.",
+      "badge": "Built-in Voice",
+      "note": "This profile uses a built-in voice. The voice cannot be changed after creation."
+    },
+    "sampleTabs": {
+      "upload": "Upload",
+      "record": "Record",
+      "system": "System Audio"
+    },
+    "fields": {
+      "engine": "Engine",
+      "voice": "Voice",
+      "name": "Name",
+      "namePlaceholder": "My Voice",
+      "descriptionLabel": "Description (Optional)",
+      "descriptionPlaceholder": "Describe this voice…",
+      "language": "Language",
+      "referenceText": "Reference Text",
+      "referenceTextPlaceholder": "Enter the exact text spoken in the audio…",
+      "defaultEngine": "Default Engine",
+      "noPreference": "No preference",
+      "defaultEngineHint": "Auto-selects this engine when the profile is chosen.",
+      "defaultEffects": "Default Effects",
+      "defaultEffectsHint": "Effects applied automatically to all new generations with this voice."
+    },
+    "avatar": {
+      "alt": "Avatar preview"
+    },
+    "actions": {
+      "saving": "Saving…",
+      "saveChanges": "Save Changes",
+      "createProfile": "Create Profile"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "referenceRequired": "Reference text is required when adding a sample",
+      "sampleRequired": "Audio sample is required",
+      "referenceTextRequired": "Reference text is required",
+      "audioTooLong": "Audio is too long ({{duration}}). Maximum duration is {{max}}.",
+      "audioFailed": "Failed to validate audio file. Please try a different file."
+    },
+    "toast": {
+      "recordingComplete": "Recording complete",
+      "recordingCompleteDescription": "Audio has been recorded successfully.",
+      "recordingError": "Recording error",
+      "systemAudioCaptured": "System audio captured",
+      "systemAudioCapturedDescription": "Audio has been captured successfully.",
+      "systemAudioError": "System audio capture error",
+      "transcribeFailed": "Transcription failed",
+      "transcribeFailedFallback": "Failed to transcribe audio",
+      "noFile": "No file selected",
+      "noFileDescription": "Please select an audio file first.",
+      "invalidFile": "Invalid file type",
+      "invalidImageFormat": "Please select an image file (PNG, JPG, or WebP)",
+      "fileTooLarge": "File too large",
+      "imageTooLargeDescription": "Image must be less than 5MB",
+      "avatarRemoved": "Avatar removed",
+      "avatarRemovedDescription": "Avatar image has been removed successfully.",
+      "avatarRemoveFailed": "Failed to remove avatar",
+      "avatarUploadFailed": "Avatar upload failed",
+      "avatarUploadFailedFallback": "Failed to upload avatar",
+      "effectsUpdateFailed": "Effects update failed",
+      "effectsUpdateFailedFallback": "Failed to save effects chain",
+      "voiceUpdated": "Voice updated",
+      "voiceUpdatedDescription": "\"{{name}}\" has been updated successfully.",
+      "noVoiceSelected": "No voice selected",
+      "noVoiceSelectedDescription": "Please select a built-in voice.",
+      "profileCreated": "Profile created",
+      "profileCreatedBuiltin": "\"{{name}}\" has been created with a built-in voice.",
+      "profileCreatedSample": "\"{{name}}\" has been created with a sample.",
+      "sampleRequired": "Audio sample required",
+      "sampleRequiredDescription": "Please provide an audio sample to create the voice profile.",
+      "referenceTextRequired": "Reference text required",
+      "referenceTextRequiredDescription": "Please provide the reference text for the audio sample.",
+      "invalidAudio": "Invalid audio file",
+      "invalidAudioDescription": "Audio duration is {{duration}}, but maximum is {{max}}.",
+      "validationError": "Validation error",
+      "rollbackFailed": "Rollback failed",
+      "rollbackFailedDescription": "Created profile could not be removed after sample upload failure.",
+      "profileRolledBack": "The profile was rolled back.",
+      "sampleFailed": "Failed to add sample",
+      "sampleFailedDescription": "Failed to add sample.",
+      "sampleFailedRolledBack": "Failed to add sample. The profile was rolled back.",
+      "saveFailed": "Failed to save profile"
+    }
+  },
+  "audioSample": {
+    "chooseFile": "Choose File",
+    "uploadHint": "Click to choose a file or drag and drop. Maximum duration: 30 seconds.",
+    "fileUploaded": "File uploaded",
+    "fileLabel": "File: {{name}}",
+    "play": "Play",
+    "pause": "Pause",
+    "transcribe": "Transcribe",
+    "transcribing": "Transcribing…",
+    "remove": "Remove",
+    "startRecording": "Start Recording",
+    "recordHint": "Click to start recording. Maximum duration: 30 seconds.",
+    "stopRecording": "Stop Recording",
+    "remaining": "{{time}} remaining",
+    "recordingComplete": "Recording complete",
+    "recordAgain": "Record Again",
+    "startCapture": "Start Capture",
+    "systemHint": "Capture audio from your system. Maximum duration: 30 seconds.",
+    "stopCapture": "Stop Capture",
+    "captureComplete": "Capture complete",
+    "captureAgain": "Capture Again"
+  },
+  "sampleList": {
+    "loading": "Loading samples…",
+    "empty": {
+      "title": "No samples yet",
+      "hint": "Add your first audio sample to get started"
+    },
+    "editing": "Editing transcription",
+    "placeholder": "Enter reference text…",
+    "saving": "Saving…",
+    "editTranscription": "Edit transcription",
+    "deleteSample": "Delete sample",
+    "addSample": "Add Sample",
+    "note": "Note: A single 30-second sample is the sweet spot. Quality may decrease with multiple samples. In a future update samples might be interchangeable and tagged for varying styles of the same voice.",
+    "deleteDialog": {
+      "title": "Delete Sample",
+      "description": "Are you sure you want to delete this audio sample? This action cannot be undone.",
+      "deleting": "Deleting…"
+    },
+    "player": {
+      "play": "Play sample",
+      "pause": "Pause sample",
+      "stop": "Stop",
+      "stopAria": "Stop playback",
+      "position": "Sample playback position",
+      "positionValue": "{{current}} of {{total}}"
+    },
+    "toast": {
+      "invalidText": "Invalid text",
+      "invalidTextDescription": "Reference text cannot be empty.",
+      "updated": "Sample updated",
+      "updatedDescription": "Reference text has been updated successfully.",
+      "updateFailed": "Update failed",
+      "updateFailedFallback": "Failed to update sample"
+    }
+  },
   "profiles": {
     "card": {
       "noDescription": "No description",
