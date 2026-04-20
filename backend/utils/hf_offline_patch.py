@@ -54,23 +54,59 @@ def force_offline_if_cached(is_cached: bool, model_label: str = ""):
 
     with _offline_lock:
         if _offline_refcount == 0:
-            _saved_env = os.environ.get("HF_HUB_OFFLINE")
+            # Snapshot prior state, apply new state, roll back on *any*
+            # failure. Catching only ImportError here would let a partially
+            # broken install (RuntimeError, AttributeError from a half-init
+            # module, etc.) leave the cached HF constants mutated without
+            # bumping the refcount — a persistent offline leak that outlives
+            # the process and is miserable to debug.
+            prev_env = os.environ.get("HF_HUB_OFFLINE")
+            prev_hf: Optional[bool] = None
+            prev_tf: Optional[bool] = None
             try:
-                import huggingface_hub.constants as hf_const
+                try:
+                    import huggingface_hub.constants as hf_const
 
-                _saved_hf_const = hf_const.HF_HUB_OFFLINE
-                hf_const.HF_HUB_OFFLINE = True
-            except ImportError:
-                _saved_hf_const = None
-            try:
-                import transformers.utils.hub as tf_hub
+                    prev_hf = hf_const.HF_HUB_OFFLINE
+                    hf_const.HF_HUB_OFFLINE = True
+                except ImportError:
+                    prev_hf = None
 
-                _saved_transformers_const = tf_hub._is_offline_mode
-                tf_hub._is_offline_mode = True
-            except ImportError:
-                _saved_transformers_const = None
+                try:
+                    import transformers.utils.hub as tf_hub
 
-            os.environ["HF_HUB_OFFLINE"] = "1"
+                    prev_tf = tf_hub._is_offline_mode
+                    tf_hub._is_offline_mode = True
+                except ImportError:
+                    prev_tf = None
+
+                os.environ["HF_HUB_OFFLINE"] = "1"
+            except BaseException:
+                # Roll back whatever we already changed, then re-raise so
+                # the caller sees the real failure.
+                if prev_hf is not None:
+                    try:
+                        import huggingface_hub.constants as hf_const
+
+                        hf_const.HF_HUB_OFFLINE = prev_hf
+                    except ImportError:
+                        pass
+                if prev_tf is not None:
+                    try:
+                        import transformers.utils.hub as tf_hub
+
+                        tf_hub._is_offline_mode = prev_tf
+                    except ImportError:
+                        pass
+                if prev_env is not None:
+                    os.environ["HF_HUB_OFFLINE"] = prev_env
+                else:
+                    os.environ.pop("HF_HUB_OFFLINE", None)
+                raise
+
+            _saved_env = prev_env
+            _saved_hf_const = prev_hf
+            _saved_transformers_const = prev_tf
             logger.info(
                 "[offline-guard] %s is cached — forcing offline mode",
                 model_label or "model",
