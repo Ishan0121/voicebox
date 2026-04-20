@@ -203,7 +203,7 @@ def preprocess_reference_audio(
     audio: np.ndarray,
     sample_rate: int,
     peak_target: float = 0.95,
-    trim_top_db: float = 30.0,
+    trim_top_db: float = 40.0,
     edge_padding_ms: int = 100,
 ) -> np.ndarray:
     """
@@ -221,9 +221,14 @@ def preprocess_reference_audio(
         peak_target: Peak amplitude cap in [0, 1]. Applied only if the input
             peak exceeds this value.
         trim_top_db: Silence threshold for edge trimming, in dB below peak.
-            Conservative (30 dB) so soft speech at the edges isn't clipped off.
-        edge_padding_ms: Milliseconds of padding retained at each edge after
-            trimming, so TTS engines have a brief silence to anchor on.
+            40 dB sits below normal speech dynamic range (≈30 dB) so soft
+            trailing syllables are preserved, while still catching obvious
+            leading/trailing silence. Lower values are more aggressive;
+            librosa's own default is 60.
+        edge_padding_ms: Milliseconds of padding to add back at each edge
+            *only if* trimming shortened the waveform, so TTS engines have a
+            brief silence to anchor on without ever making the output longer
+            than the input.
 
     Returns:
         Preprocessed audio array (float32).
@@ -236,8 +241,13 @@ def preprocess_reference_audio(
     audio = audio - float(np.mean(audio))
 
     trimmed, _ = librosa.effects.trim(audio, top_db=trim_top_db)
-    if trimmed.size > 0:
-        pad = int(sample_rate * edge_padding_ms / 1000)
+    if 0 < trimmed.size < audio.size:
+        pad_each = int(sample_rate * edge_padding_ms / 1000)
+        # Never pad past the original length — for near-max-duration uploads
+        # an unconditional pad would push them over the 30 s ceiling and
+        # trigger a spurious "too long" rejection.
+        headroom = (audio.size - trimmed.size) // 2
+        pad = min(pad_each, max(headroom, 0))
         if pad > 0:
             trimmed = np.pad(trimmed, (pad, pad), mode="constant")
         audio = trimmed

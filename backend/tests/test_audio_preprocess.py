@@ -58,6 +58,15 @@ def test_silence_is_trimmed_with_padding_kept():
     assert len(out) >= int(3.0 * SR), "speech body should be preserved"
 
 
+def test_clean_audio_is_not_padded_past_original_length():
+    # Well-recorded audio with no edge silence shouldn't get longer after
+    # preprocessing — otherwise a 29.9 s upload could be pushed past the
+    # 30 s max_duration ceiling downstream.
+    audio = _tone(3.0, amp=0.3)
+    out = preprocess_reference_audio(audio, SR)
+    assert len(out) <= len(audio)
+
+
 def test_empty_input_returns_empty():
     out = preprocess_reference_audio(np.zeros(0, dtype=np.float32), SR)
     assert out.size == 0
