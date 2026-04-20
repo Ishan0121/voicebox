@@ -37,6 +37,80 @@
       "deleting": "删除中…"
     }
   },
+  "stories": {
+    "title": "故事",
+    "newStory": "新建故事",
+    "loading": "加载故事中…",
+    "empty": {
+      "title": "暂无故事",
+      "hint": "创建您的第一个故事以开始"
+    },
+    "row": {
+      "itemCount_one": "{{count}} 项",
+      "itemCount_other": "{{count}} 项",
+      "ariaLabel": "故事 {{name}},{{count}} 项,{{updated}}",
+      "actionsLabel": "{{name}} 的操作"
+    },
+    "createDialog": {
+      "title": "新建故事",
+      "description": "创建新故事以将您的语音生成整理成对话。",
+      "action": "创建",
+      "creating": "创建中…"
+    },
+    "editDialog": {
+      "title": "编辑故事",
+      "description": "更新故事名称和描述。",
+      "saving": "保存中…"
+    },
+    "deleteDialog": {
+      "title": "确定吗?",
+      "description": "这将永久删除该故事及其所有项目。此操作不可撤销。",
+      "deleting": "删除中…"
+    },
+    "fields": {
+      "name": "名称",
+      "namePlaceholder": "我的故事",
+      "descriptionLabel": "描述(可选)",
+      "descriptionPlaceholder": "一段对话……"
+    },
+    "toast": {
+      "nameRequired": "请输入名称",
+      "nameRequiredDescription": "请输入故事名称",
+      "created": "故事已创建",
+      "createdDescription": "\"{{name}}\" 已创建",
+      "createFailed": "创建故事失败",
+      "updateFailed": "更新故事失败",
+      "deleteFailed": "删除故事失败"
+    }
+  },
+  "storyContent": {
+    "selectStory": {
+      "title": "选择一个故事",
+      "hint": "从列表中选择一个故事以查看其内容"
+    },
+    "loading": "加载故事中…",
+    "notFound": {
+      "title": "未找到故事",
+      "hint": "无法加载所选故事"
+    },
+    "generatingCount_one": "生成 {{count}} 个音频中",
+    "generatingCount_other": "生成 {{count}} 个音频中",
+    "add": "添加",
+    "searchPlaceholder": "按名称或文字内容搜索……",
+    "searchNoMatches": "未找到匹配的生成",
+    "searchNoAvailable": "暂无可用的生成",
+    "exportAudio": "导出音频",
+    "empty": {
+      "title": "此故事暂无项目",
+      "hint": "使用下方输入框生成语音以添加项目"
+    },
+    "toast": {
+      "removeFailed": "移除项目失败",
+      "reorderFailed": "重新排序项目失败",
+      "exportFailed": "导出音频失败",
+      "addFailed": "添加生成失败"
+    }
+  },
   "history": {
     "deleteDialog": {
       "title": "删除生成",
