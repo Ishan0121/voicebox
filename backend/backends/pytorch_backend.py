@@ -347,7 +347,7 @@ class PyTorchSTTBackend:
         def _transcribe_sync():
             """Run synchronous transcription in thread pool."""
             # Load audio
-            audio, sr = load_audio(audio_path, sample_rate=16000)
+            audio, _sr = load_audio(audio_path, sample_rate=16000)
 
             # Model is loaded → weights are on disk. Force offline so
             # `get_decoder_prompt_ids` and any lazy tokenizer lookups
